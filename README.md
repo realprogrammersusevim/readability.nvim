@@ -1,15 +1,15 @@
-# readability.nvim | Alpha
+# readability.nvim | Beta
 
-Quickly calculate the readability of your prose. Currently in alpha stage. I haven't written the sentence and syllable parsers yet so for now it just relies on the `style` command. Don't worry, it'll soon be pure Lua.
+Have you ever been writing when you suddenly noticed that your prose doth
+eloquently wax too verbose? Fear not, for this NeoVim plugin analyzes your
+writing and provides a readability score so you know exactly what kind of
+audience your writing is targeting.
 
 ## Requirements
 
 - NeoVim >= newish
-- Style command
 
 ## Installation
-
-Install `style` with your package manager (don't worry, you won't have to do this soon).
 
 Install this NeoVim plugin using your favorite package manager.
 
@@ -19,7 +19,7 @@ Install this NeoVim plugin using your favorite package manager.
 Plug 'realprogrammersusevim/readability.nvim'
 ```
 
-And then restart and `:PlugInstall`.
+And then restart and run `:PlugInstall`.
 
 **Packer**
 
@@ -29,7 +29,15 @@ use 'realprogrammersusevim/readability.nvim'
 
 Then restart and run `:PackerInstall`.
 
+## Usage
+
+Currently, this plugin only provides a single command, `:Readability`, which
+calculates the SMOG index of the current buffer.
+
 ## TODO
 
-- [ ] Write a sentence parser in Lua. The regular expressions will be complex enough that I'll have to get put the lrexlib Lua library in a dependencies folder. I found a parser [here.](https://github.com/pncnmnp/LuaNLP/blob/main/tokenizer/tokenization.lua)
-- [ ] Write a word syllable counter. Use the rules described [here.](https://www.howmanysyllables.com/syllable_rules/howtocountsyllables) For the first version just hard code "y" as either a vowel or consonant, depending on which is more common. Eventually write some rules to figure out that tricky "y".
+- [x] Write a sentence parser in Lua
+- [x] Write a word syllable counter
+- [ ] Add more readability metrics
+- [ ] Improve syllable counter
+- [ ] Write documentation
