@@ -1,3 +1,5 @@
+local ignore_list = require('readability.ignore')
+
 local M = {}
 
 function M.mysplit(inputstr, sep)
@@ -15,9 +17,7 @@ end
 function M.remove_problems(string_to_check)
   local split = M.mysplit(string_to_check)
 
-  local ignore_file = io.open('en.txt')
-  ignore_file = ignore_file:read('*all')
-  local ignore = M.mysplit(ignore_file)
+  local ignore = ignore_list
 
   for i, v in ipairs(split) do
     for j, k in ipairs(ignore) do
