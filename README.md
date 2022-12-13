@@ -1,4 +1,4 @@
-# readability.nvim | Beta
+# readability.nvim | βήτα
 
 Have you ever been writing when you suddenly noticed that your prose doth
 eloquently wax too verbose? Fear not, for this NeoVim plugin analyzes your
@@ -31,13 +31,16 @@ Then restart and run `:PackerInstall`.
 
 ## Usage
 
-Currently, this plugin only provides a single command, `:Readability`, which
-calculates the SMOG index of the current buffer.
+This plugin provides two commands:
+
+1. `:ReadabilitySmog` which calculates the SMOG index of your writing
+2. `:ReadabilityFlesch` which calculates the Flesch-Kincaid grade level of your
+   writing
 
 ## TODO
 
 - [x] Write a sentence parser in Lua
 - [x] Write a word syllable counter
-- [ ] Add more readability metrics
+- [x] Add more readability metrics
 - [ ] Improve syllable counter
 - [ ] Write documentation
