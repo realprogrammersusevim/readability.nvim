@@ -64,87 +64,78 @@ local special_syllables = {
   ['unostentatious'] = 5,
 }
 
-local fallback_subsyl = {
+local SubSyl = {
   'cial',
   'tia',
   'cius',
   'cious',
-  'gui',
+  'giu', -- belgium!
   'ion',
   'iou',
   'sia$',
-  '%.ely$',
+  '.ely$', -- absolutely! (but not ely!)
+  '[^td]ed$', -- accused is 2, but executed is 4
 }
 
-local fallback_addsyl = {
+local AddSyl = {
   'ia',
   'riet',
   'dien',
   'iu',
   'io',
   'ii',
-  '[aeiou]bl$',
-  'mbl$', -- -Vble, plus -mble
-  '[aeiou]{3}',
+  'microor',
+  '[aeiouym]bl$', -- -Vble, plus -mble
+  '[aeiou]{3}', -- agreeable
   '^mc',
-  'ism$',
-  '(.)(?!\\1)([aeiouy])\\2l$',
-  '[^l]lien',
-  '^coa[dglx].',
-  '(.)(?!\\1)[gq]ua(.)(?!\\2)[aeiou]',
-  'dnt$',
+  'ism$', -- -ism
+  'isms$', -- -isms
+  '([^aeiouy])\1l$', -- middle twiddle battle bottle, etc.
+  '[^l]lien', -- alien, salient [1]
+  '^coa[dglx].', -- [2]
+  '[^gq]ua[^auieo]', -- i think this fixes more than it breaks
+  'dnt$', -- couldn't
 }
 
-local fallback_cache = {}
-
-local function normalize_word(word)
-  local normalized = word:lower()
-  normalized = normalized:gsub('[^%w]', '')
-  return normalized
-end
-
-for i, v in ipairs(special_syllables) do
-  fallback_cache[normalize_word(i)] = v
-end
-
 function M.count(word)
-  word = normalize_word(word)
-
-  -- local syl_count = fallback_cache[word]
-  -- print(syl_count)
-  -- if syl_count then
-  --   return syl_count
-  -- end
-
-  if word[-1] == 'e' then
-    word = word:sub(1, -2)
+  if special_syllables[word] then
+    return special_syllables[word]
   end
 
-  local syl_count = 0
-  local prev_was_vowel = ''
-  for i = 1, #word do
-    local c = word:sub(i, i)
-    local is_vowel = c:match('[aeiouy]')
-
-    if is_vowel and not prev_was_vowel then
-      syl_count = syl_count + 1
+  local scrugg, syl = {}, 0
+  word = string.lower(word)
+  if word == 'w' then
+    return 2
+  end
+  if string.len(word) == 1 then
+    return 1
+  end
+  word = vim.fn.substitute(word, '[^\\w]', '', 'g')
+  word = string.gsub(word, "'", '') -- fold contractions.  not very effective.
+  word = string.gsub(word, 'e$', '')
+  for i in vim.gsplit(word, '[^aeiouy]+', false) do
+    table.insert(scrugg, i)
+  end
+  if #scrugg > 0 and scrugg[1] == '' then
+    table.remove(scrugg, 1)
+  end
+  -- special cases
+  for _, v in ipairs(SubSyl) do
+    if string.match(word, v) then
+      syl = syl - 1
     end
-
-    prev_was_vowel = is_vowel
   end
-
-  -- This is commented out until I can get it working.
-  -- for i, v in ipairs(fallback_subsyl) do
-  --   syl_count = syl_count + syl_count:gmatch(v)
-  -- end
-  --
-  -- for i, v in ipairs(fallback_addsyl) do
-  --   syl_count = syl_count + syl_count:gmatch(v)
-  -- end
-
-  -- fallback_cache[word] = syl_count
-
-  return syl_count
+  for _, v in ipairs(AddSyl) do
+    if string.match(word, v) then
+      syl = syl + 1
+    end
+  end
+  -- count vowel groupings
+  syl = syl + #scrugg
+  if syl == 0 then
+    return 1
+  end -- got no vowels? ("the", "crwth")
+  return syl
 end
 
 return M
