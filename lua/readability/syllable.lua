@@ -110,7 +110,7 @@ function M.count(word)
   if string.len(word) == 1 then
     return 1
   end
-  word = vim.fn.substitute(word, '[^\\w]', '', 'g')
+  word = vim.fn.substitute(word, '[^\\w]', '', '')
   word = string.gsub(word, "'", '') -- fold contractions.  not very effective.
   word = string.gsub(word, 'e$', '')
   for i in vim.gsplit(word, '[^aeiouy]+', false) do
